@@ -2,8 +2,10 @@ import dotenv from "dotenv";
 import passport from 'passport';
 import GoogleStrategy from 'passport-google-oauth20';
 import userSchema from '../models/userModel.js';
-
+import express from 'express'
 dotenv.config();
+
+const router = express.Router()
 
 const passportGoogle = async () => {
     passport.use(new GoogleStrategy({
@@ -11,11 +13,16 @@ const passportGoogle = async () => {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: "/auth/google/callback",
     },
+
         async (accessToken, refreshToken, profile, done) => {
             console.log("profile", profile);
             console.log("accessToken", accessToken);
             console.log("refreshToken", refreshToken);
+            console.log("done", done);
             try {
+                //* check if user already exists in our own db by user route
+
+
                 let existingUser = await userSchema.findOne({ 'google.id': profile.id });
                 console.log("existingUser", existingUser);
                 // if user exists return the user 
@@ -25,11 +32,13 @@ const passportGoogle = async () => {
                 // if user does not exist create a new user 
                 console.log('Creating new user...');
                 const newUser = new userSchema({
-                    method: 'google',
+                    
                     google: {
                         id: profile.id,
-                        name: profile.displayName,
-                        email: profile.emails[0].value
+                        displayName: profile.displayName,
+                        name: profile.name,
+                        emails: profile.emails,
+                        photos: profile.photos,
                     },
                     password: "ali"
                 });
@@ -49,6 +58,29 @@ const passportGoogle = async () => {
         });
     });
 }
+passportGoogle();
 
-export default passportGoogle;
+
+router.get('/', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+router.get("/callback",
+    passport.authenticate("google", {
+        successRedirect: process.env.CLIENT_URL,
+        failureRedirect: "/auth/login/failed",
+        session: true
+    })
+);
+
+export default router
+
+
+
+
+
+
+
+
+
+
+
 
