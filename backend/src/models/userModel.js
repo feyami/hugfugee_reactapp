@@ -6,39 +6,47 @@ const userSchema = new Schema({
     firstName: {
         type: String,
         require: true,
-         
     },
     lastName: {
         type: String,
         require: true,
-         
     },
     phoneNumber: {
         type: String,
         require: true,
     },
-    google: {
-        id: {
-            type: String,
-        },
-        name: {
-            type: String,
-        },
-        email: {
-            type: String,
-        },
+    //* knowledges and skills for helping the refugee 
+    skills: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Skill'
+    }],
+    languages: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Language'
+    }],
+    date_of_birth: {
+        type: Date,
     },
     password: {
         type: String,
         required: true
+    },
+    smsVerificationCode: {
+        type: Number,
+        require: true,
     },
     isActivated: {
         type: Boolean,
         default: false
     },
     role: {
-        type: String,
-        default: "user"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Role'
+    },
+    //* availability for helping the refugee
+    status: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Status'
     },
     createdAt: {
         type: Date,
@@ -47,7 +55,24 @@ const userSchema = new Schema({
     updatedAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    google: {
+        id: {
+            type: String,
+        },
+        displayName: {
+            type: String,
+        },
+        name: {
+            type: Object,
+        },
+        emails: {
+            type: Array,
+        },
+        photos: {
+            type: Array,
+        },
+    },
 },
     {
         timestamps: true
