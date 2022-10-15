@@ -8,7 +8,13 @@ import Logo from '../images/hugfugee_favicon.png'
 
 import "../styles/Header.scss";
 
-const Header = () => {
+const Header = ({ user }) => {
+
+    console.log("user", user);
+    const logout = () => {
+      window.open("http://localhost:4000/auth/logout", "_self");
+    };
+
     return (
         <header>
             <Navbar collapseOnSelect expand="lg">
@@ -38,9 +44,23 @@ const Header = () => {
                         </Nav>
                         <Nav>
                             <Nav.Link href="#deets">Volunteers</Nav.Link>
-                            <Nav.Link eventKey={2} href="#memes">
+                            {user ? (
+        <ul className="list">
+          <li className="listItem">
+            <img
+              src={user.google.photos[0].value}
+              alt=""
+              className="avatar"
+            />
+          </li>
+          <li className="listItem">{user.google.displayName}</li>
+          <li className="listItem" onClick={logout}>
+            Logout
+          </li>
+        </ul>
+      ) : (<Nav.Link eventKey={2} href="login">
                                 Login
-                            </Nav.Link>
+                            </Nav.Link>)}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
