@@ -11,8 +11,10 @@ import twilioRoutes from './routes/twilioSms.js';
 import googleAuth from './controllers/googleAuth.js';
 import userRoutes from './routes/user.js';
 import languageRoutes from './routes/language.js';
+import videoConnectionRoutes from './routes/videoConnection.js';
 import { createServer } from "http";
 import { Server } from "socket.io";
+import videoConnectionModel from "./models/videoConnectionModel.js";
 
 dotenv.config();
 const app = express();
@@ -38,23 +40,43 @@ app.use("/twilio", twilioRoutes);
 app.use("/google", googleAuth);
 app.use("/user", userRoutes);
 app.use("/language", languageRoutes);
+app.use("/videoConnection", videoConnectionRoutes);
 
 //*Socket.io
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.CLIENT_URL,
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  console.log("a user connected", socket.id);
 	socket.emit("me", socket.id);
 
 	socket.on("disconnect", () => {
-		socket.broadcast.emit("callEnded")
-	});
+   //* toggle status to offline in mongoDB when user disconnects
+  app.patch("/videoConnection", (req, res) => {
+    const _id= socket.id;
+    const status = false;
+    videoConnectionModel.findByIdAndUpdate(_id, { 
+      status: status
+    }, { new: true })
+      .then((updatedVideoCall) => {
+        res.status(200).json(updatedVideoCall);
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  });
+    socket.broadcast.emit("callEnded");
+  });
+
+      
+
+  
+ 
 
 	socket.on("callUser", ({ userToCall, signalData, from, name }) => {
 		io.to(userToCall).emit("callUser", { signal: signalData, from, name });
@@ -70,7 +92,7 @@ io.on("connection", (socket) => {
 MongoDbConnection();
 
 const port=process.env.PORT || 4000
-app.listen(port, () => {
+httpServer.listen(port, () => {
   console.log(`Server Started at port ${port}`);
 })
 

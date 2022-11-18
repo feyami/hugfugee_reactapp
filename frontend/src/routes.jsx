@@ -22,6 +22,7 @@ const Home = Loadable(lazy(() => import("./pages/home")));
 const Login = Loadable(lazy(() => import("./pages/Login")));
 const ProfileEdit=  Loadable(lazy(() => import("pages/profileEdit")));
 const Profile=  Loadable(lazy(() => import("pages/profile")));
+const VideoCallRef=  Loadable(lazy(() => import("pages/videoCallRef")));
 //const Chat = Loadable(lazy(() => import("pages/chat/Chat")));
 //const Test = Loadable(lazy(() => import("./pages/Test")));
 //const Todo = Loadable(lazy(() => import("pages/Todo")));
@@ -39,6 +40,14 @@ const routes = [
       <GuestRoute>
         <Login />
       </GuestRoute>
+    ),
+  },
+  {
+    path: "videocall",
+    element: (
+     
+        <VideoCallRef />
+     
     ),
   },
   {
@@ -60,6 +69,7 @@ const routes = [
         path: "profile",
         element: <Profile />,
       },
+       
       // {
       //   path: "Todo",
       //   element: <Todo />,

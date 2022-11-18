@@ -1,8 +1,8 @@
 import { CameraAlt, Clear, Facebook, Instagram, SportsBasketball, Twitter } from "@mui/icons-material";
-import { Autocomplete, Box, Button, Card, Divider, Grid, IconButton } from "@mui/material";
+import { Autocomplete, Box, Button, Card, Divider, Grid, IconButton,useTheme } from "@mui/material";
 import FlexBox from "components/Box/FlexBox";
 import LightTextField from "components/textField/LightTextField";
-import { H5, Tiny } from "components/Typography";
+import { H5,H6, Small, Tiny } from "components/Typography";
 import StyledAvatar from "components/StyledAvatar";
 import { useFormik } from "formik";
 import { useState,useEffect } from "react";
@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import { StyledBadge, StyledChip, StyledInput } from "components/Profile/StyledComponent";
 import { useSelector, useDispatch } from "react-redux";
- 
+import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined"; 
 import { fetchLanguages } from "redux/features/language/languageSlice";
 import { updateUser } from "redux/features/user/userSlice";
 import { selectUser } from "redux/features/auth/authSlice";
@@ -22,7 +22,7 @@ console.log("user",user);
   const {
     t
   } = useTranslation();
-
+  const theme = useTheme();
   useEffect(() => {
     dispatch(fetchLanguages());
      
@@ -50,7 +50,11 @@ console.log("user",user);
     
   });
 
-
+  function handleChangeFile(event) {
+    const file = event.target.files[0];
+    console.log("file", file);
+  }
+   
 
   const {
     values,
@@ -155,6 +159,39 @@ console.log("user",user);
       <Grid item xs={12} sm={6}>
           <LightTextField fullWidth name="jobTitle" label="Job Title" value={values.jobTitle} onChange={handleChange} helperText={touched.jobTitle && errors.jobTitle} error={Boolean(touched.jobTitle && errors.jobTitle)} />
         </Grid>
+
+        <Grid item xs={12}>
+        <Box mb={2}>
+        <H6 mb={1}>Add Valid ID</H6>
+
+        <label htmlFor="file">
+         
+          <input name="file" onChange={handleChangeFile}  id="file" type="file" style={{
+          display: "none"
+        }} />
+          <IconButton component="span" disableRipple sx={{
+          padding: 0,
+          display: "block"
+        }}>
+            <Box sx={{
+            backgroundColor: theme.palette.mode === "light" ? "secondary.100" : "divider",
+            minHeight: 40,
+            borderRadius: "8px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+              <DriveFolderUploadOutlinedIcon sx={{
+              fontSize: 18,
+              color: "text.disabled",
+              marginRight: 0.5
+            }} />
+              <Small color="text.disabled">Choose a file</Small>
+            </Box>
+          </IconButton>
+        </label>
+      </Box>
+      </Grid> 
 
         <Grid item xs={12}>
           <LightTextField fullWidth multiline rows={10} name="bio" value={values.bio} onChange={handleChange} label="About you / Bio" helperText={touched.bio && errors.bio} error={Boolean(touched.bio && errors.bio)} sx={{

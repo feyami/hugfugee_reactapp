@@ -7,7 +7,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import SettingsProvider from "contexts/SettingsContext";
 import TitleContextProvider from "./contexts/TitleContext";
-  
+import { ContextProvider } from './contexts/SocketIoContext';  
 import "simplebar/dist/simplebar.min.css";
 import "nprogress/nprogress.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -18,14 +18,18 @@ root.render(
    
   <LocalizationProvider dateAdapter={AdapterDayjs}> 
  
-    <Provider store={store}>
+    <Provider store={store}> 
+    <ContextProvider>
       <SettingsProvider>
-        <TitleContextProvider> 
+        <TitleContextProvider>
+       
           <BrowserRouter>
             <App />
           </BrowserRouter>
+          
         </TitleContextProvider>
       </SettingsProvider>
+       </ContextProvider>
       </Provider>
  
    </LocalizationProvider>

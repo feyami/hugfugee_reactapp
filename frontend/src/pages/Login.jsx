@@ -12,7 +12,7 @@ import { Brightness4 } from "@mui/icons-material";
 import { fetchLanguages } from "redux/features/language/languageSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useState,useEffect } from "react";
- 
+import { useNavigate } from "react-router-dom"; 
 const SocialIconButton = styled(Button)(({ theme }) => ({
   width: "48%",
   height: 48,
@@ -63,6 +63,7 @@ const Login = () => {
     });
   };
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     dispatch(fetchLanguages());
      
@@ -109,7 +110,7 @@ const Login = () => {
 
   <Grid container spacing={4} my={2} px={2}  >
   {languagesList?.map(language => <Grid item md={3} xs={6} key={language.code}>
-      <img src={`https://flagcdn.com/w160/${language.code.toLowerCase()}.png`} alt={language.title}   width="100%" height="100%" style={{
+      <img src={`https://flagcdn.com/w160/${language.code.toLowerCase()}.png`} alt={language.title} onClick={()=>navigate("/videocall",{state:language})}   width="100%" height="100%" style={{
     cursor: "pointer"
   }} /> 
   <Small>{language.title}</Small>
