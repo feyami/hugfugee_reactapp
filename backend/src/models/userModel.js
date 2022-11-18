@@ -11,15 +11,26 @@ const userSchema = new Schema({
         type: String,
         require: true,
     },
+    fullName: {
+        type: String,
+    },
+    photo: {
+        type: String,
+    },
     phoneNumber: {
         type: String,
         require: true,
     },
-    //* knowledges and skills for helping the refugee 
-    skills: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Skill'
-    }],
+    address: {
+        type: String
+    },
+    jobTitle: {
+        type: String,
+       
+    },
+    bio: {
+        type: String,
+    },
     languages: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Language'
@@ -37,24 +48,16 @@ const userSchema = new Schema({
     },
     isActivated: {
         type: Boolean,
-        default: false
+        default: true
     },
     role: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Role'
+        type: String,
+        enum: ['admin','volunteer','refugee'],
+        default: 'volunteer'
     },
-    //* availability for helping the refugee
-    status: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Status'
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
+    isAvailable:{
+        type: Boolean,
+        default:true
     },
     google: {
         id: {
@@ -95,5 +98,15 @@ userSchema.pre('save', async function (next) {
         return next(error);
     }
 });
+
+userSchema.pre('save', async function (next) {
+    try {
+        this.fullName = `${this.firstName} ${this.lastName}`;
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
+
 
 export default mongoose.model("User", userSchema);
