@@ -27,25 +27,28 @@ const passportGoogle = async () => {
                 console.log("existingUser", existingUser);
                 // if user exists return the user 
                 if (existingUser) {
-                    return done(null, existingUser);
+                    return done(null, existingUser );
                 }
                 // if user does not exist create a new user 
                 console.log('Creating new user...');
                 const newUser = new userSchema({
-                    
+                    firstName: profile.name.givenName,
+                    lastName: profile.name.familyName,
+                    photo: profile.photos[0].value,
+                    role: 'volunteer',
                     google: {
                         id: profile.id,
                         displayName: profile.displayName,
                         name: profile.name,
-                        emails: profile.emails,
+                        emails: profile.emails, 
                         photos: profile.photos,
                     },
                     password: "ali"
                 });
                 await newUser.save();
-                return done(null, newUser);
+                return done(null, newUser );
             } catch (error) {
-                return done(error, false)
+                return done(error, false) 
             }
         }
     ));
@@ -65,7 +68,7 @@ router.get('/', passport.authenticate('google', { scope: ['profile', 'email'] })
 
 router.get("/callback",
     passport.authenticate("google", {
-        successRedirect: process.env.CLIENT_URL,
+        successRedirect: `${process.env.CLIENT_URL}/dashboard/profile`,
         failureRedirect: "/auth/login/failed",
         session: true
     })
