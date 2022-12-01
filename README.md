@@ -1,4 +1,4 @@
-<img src="./frontend/images/hugfugee_logo.png" alt="logo">
+<img src="./frontend/src/assets/icons/hugfugee_logo.png" alt="logo">
 
 <h1>🌸 Welcome you all on the official github of <b>HUGFUGEE<b></h1>
 
